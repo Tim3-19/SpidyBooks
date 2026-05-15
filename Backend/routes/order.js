@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const User = require("../database/user");
-const {authenticateToken} = require("./userAuth");
+const { authenticateToken } = require("./userAuth");
 const book = require("../database/book");
 const Order = require("../database/order");
 const user = require("../database/user");
@@ -12,7 +12,7 @@ router.post("/place-order", authenticateToken, async (req, res) => {
         const { order } = req.body;
 
         console.log("--- BODY DEBUG ---");
-console.log("Full Body Object:", req.body); // See what keys are actually here
+        console.log("Full Body Object:", req.body); // See what keys are actually here
 
         // check if order is empty
         if (!order || order.length === 0) {
@@ -51,7 +51,7 @@ console.log("Full Body Object:", req.body); // See what keys are actually here
 
             const newOrder = new Order({
                 user: id,
-                book: bookId, 
+                book: bookId,
                 quantity: reqQty,
             });
 
@@ -74,15 +74,15 @@ console.log("Full Body Object:", req.body); // See what keys are actually here
         return res.status(500).json({ message: "Error placing order", error: error.message });
     }
 });
-router.get("/order-history",authenticateToken,async (req,res) => {
-    
+router.get("/order-history", authenticateToken, async (req, res) => {
+
     try {
-        const { id } =req.headers;
+        const { id } = req.headers;
         console.log("Headers received:", req.headers);
-console.log("Extracted ID:", id);
+        console.log("Extracted ID:", id);
         const userData = await User.findById(id).populate({
             path: "order",
-            populate: {path:"book"},
+            populate: { path: "book" },
         });
         console.log(userData);
 
@@ -91,51 +91,51 @@ console.log("Extracted ID:", id);
             status: "Success",
             data: orderData,
         });
-        
+
     } catch (error) {
         res.status(500).json({ message: "Internal Server Issue" });
-    } 
-   
-    
+    }
+
+
 })
 //order history for user
 
 
 //order list for admin
-router.get("/all-order", authenticateToken, async(req, res) => {
+router.get("/all-orders", authenticateToken, async (req, res) => {
     try {
         const orderData = await Order.find()
             .populate("book")
             .populate("user")
             .sort({ createdAt: -1 });
-            
+
         return res.json({
             status: "Success",
-            data: orderData,             
+            data: orderData,
         });
-        
+
     } catch (error) {
         console.error("Error fetching all orders:", error);
         res.status(500).json({ message: "Internal Server Issue" });
-    } 
+    }
 });
 
 //updating order status
-router.put("/update-status/:id", authenticateToken, async(req, res) => {
+router.put("/update-status/:id", authenticateToken, async (req, res) => {
     try {
         const { id } = req.params;
         await Order.findByIdAndUpdate(id, { orderstatus: req.body.status });
-       
+
         return res.json({
             status: "Success",
-            message: "Status updated successfully",             
+            message: "Status updated successfully",
         });
-        
+
     } catch (error) {
         console.error("Error updating status:", error);
         res.status(500).json({ message: "Internal Server Issue" });
-    } 
+    }
 });
 
 
-module.exports=router;
+module.exports = router;

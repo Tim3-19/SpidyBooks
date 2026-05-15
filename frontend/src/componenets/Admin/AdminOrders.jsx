@@ -7,7 +7,7 @@ import { ChevronDown, Eye, X } from 'lucide-react';
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Modal State for Order Details
   const [selectedOrder, setSelectedOrder] = useState(null);
 
@@ -43,7 +43,7 @@ const AdminOrders = () => {
   };
 
   const getStatusColor = (status) => {
-    switch(status) {
+    switch (status) {
       case "Delivered": return "text-green-400 bg-green-500/10 border-green-500/20";
       case "Cancelled": return "text-red-400 bg-red-500/10 border-red-500/20";
       case "Out for delivery": return "text-blue-400 bg-blue-500/10 border-blue-500/20";
@@ -74,7 +74,7 @@ const AdminOrders = () => {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order) => (
+                {orders?.map((order) => (
                   <tr key={order._id} className="border-b border-zinc-800/50 hover:bg-zinc-800/50 transition-colors">
                     <td className="p-4 font-mono text-sm text-zinc-500">{order._id.substring(0, 8)}...</td>
                     <td className="p-4">
@@ -84,13 +84,13 @@ const AdminOrders = () => {
                       </div>
                     </td>
                     <td className="p-4 font-medium text-yellow-500">
-                      {order.book?.title || "Unknown Book"} 
+                      {order.book?.title || "Unknown Book"}
                       {order.quantity > 1 && <span className="ml-2 text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded-full">x{order.quantity}</span>}
                     </td>
                     <td className="p-4 text-zinc-400 text-sm">{new Date(order.createdAt).toLocaleDateString()}</td>
                     <td className="p-4">
                       <div className="relative inline-block w-40">
-                        <select 
+                        <select
                           className={`w-full appearance-none outline-none border rounded-lg px-3 py-1.5 text-sm font-semibold cursor-pointer transition-colors ${getStatusColor(order.orderstatus)}`}
                           value={order.orderstatus}
                           onChange={(e) => handleStatusChange(order._id, e.target.value)}
@@ -106,7 +106,7 @@ const AdminOrders = () => {
                       </div>
                     </td>
                     <td className="p-4 text-center">
-                      <button 
+                      <button
                         onClick={() => setSelectedOrder(order)}
                         className="p-2 text-zinc-400 hover:text-yellow-400 bg-zinc-800/50 hover:bg-yellow-400/10 rounded-lg transition-colors inline-block"
                       >
@@ -115,7 +115,7 @@ const AdminOrders = () => {
                     </td>
                   </tr>
                 ))}
-                {orders.length === 0 && (
+                {orders?.length === 0 && (
                   <tr>
                     <td colSpan="6" className="p-8 text-center text-zinc-500">No orders found.</td>
                   </tr>
@@ -130,7 +130,7 @@ const AdminOrders = () => {
       <AnimatePresence>
         {selectedOrder && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
@@ -142,7 +142,7 @@ const AdminOrders = () => {
                   <X size={24} />
                 </button>
               </div>
-              
+
               <div className="p-6 space-y-6">
                 <div className="flex items-center gap-4 bg-zinc-950 p-4 rounded-xl border border-zinc-800">
                   <img src={selectedOrder.book?.url} alt="book cover" className="w-16 h-24 object-cover rounded shadow-md" />
