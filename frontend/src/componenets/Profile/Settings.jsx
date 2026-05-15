@@ -73,7 +73,7 @@ const Settings = () => {
       payload[field] = values[field];
       
       const response = await axios.put(
-        "http://localhost:5000/api/v1/update-profile",
+        `${import.meta.env.VITE_API_URL}/api/v1/update-profile`,
         payload,
         { headers }
       );

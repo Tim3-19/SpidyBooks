@@ -20,7 +20,7 @@ const Favourite = () => {
       try {
 
         const response = await axios.get(
-          "http://localhost:5000/api/v1/getFavBooks",
+          `${import.meta.env.VITE_API_URL}/api/v1/getFavBooks`,
           { headers }
         )
 

@@ -11,7 +11,7 @@ const Recent = () => {
   useEffect(() => {
     const fetch = async ()=> {
       try {
-        const response = await axios.get("http://localhost:5000/api/v1/recent-added");
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/recent-added`);
         setRbook(response.data.data || []);
       } catch (err) {
         console.error(err);

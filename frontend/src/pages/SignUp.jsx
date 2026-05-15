@@ -36,7 +36,7 @@ const SignUp = () => {
       }
 
       // Send data to backend (Adjust URL if needed)
-      const response = await axios.post("http://localhost:5000/api/v1/sign-up", Values);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/sign-up`, Values);
       
       alert(response.data.message);
       navigate("/LogIn"); // Redirect to login on success

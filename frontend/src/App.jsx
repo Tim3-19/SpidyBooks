@@ -34,7 +34,7 @@ const App = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/v1/settings");
+        const res = await axios.get("https://spidybooks.onrender.com/api/v1/settings");
         if (res.data && res.data.data) {
           setIsMaintenance(res.data.data.maintenanceMode);
         }

@@ -14,7 +14,7 @@ const AdminUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/get-all-users", { headers });
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/get-all-users`, { headers });
       setUsers(response.data.data);
       setLoading(false);
     } catch (error) {
@@ -31,7 +31,7 @@ const AdminUsers = () => {
     const newRole = currentRole === "admin" ? "user" : "admin";
     if (window.confirm(`Are you sure you want to change this user's role to ${newRole.toUpperCase()}?`)) {
       try {
-        await axios.put(`http://localhost:5000/api/v1/update-role/${userId}`, { role: newRole }, { headers });
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/v1/update-role/${userId}`, { role: newRole }, { headers });
         // Update local state
         setUsers(users.map(user => user._id === userId ? { ...user, role: newRole } : user));
       } catch (error) {
@@ -44,7 +44,7 @@ const AdminUsers = () => {
   const handleDeleteUser = async (userId) => {
     if (window.confirm("WARNING: This will permanently delete the user account. Are you sure?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/v1/delete-user/${userId}`, { headers });
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/v1/delete-user/${userId}`, { headers });
         setUsers(users.filter(user => user._id !== userId));
       } catch (error) {
         console.error(error);

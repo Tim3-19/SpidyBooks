@@ -18,7 +18,7 @@ const AdminOrders = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/all-order", { headers });
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/all-orders`, { headers });
       setOrders(response.data.data);
       setLoading(false);
     } catch (error) {
@@ -33,7 +33,7 @@ const AdminOrders = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      await axios.put(`http://localhost:5000/api/v1/update-status/${orderId}`, { status: newStatus }, { headers });
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/v1/update-status/${orderId}`, { status: newStatus }, { headers });
       // Update local state directly to feel snappy
       setOrders(orders.map(order => order._id === orderId ? { ...order, orderstatus: newStatus } : order));
     } catch (error) {

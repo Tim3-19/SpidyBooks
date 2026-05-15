@@ -20,7 +20,7 @@ const BookDetails = () => {
   useEffect(() => {
     const fetchBook = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/v1/book-id/${id}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/book-id/${id}`);
         setRbook(response.data.data);
       } catch (error) {
         console.error("Error fetching book:", error);
@@ -39,7 +39,7 @@ const BookDetails = () => {
   // 3. User Handlers
   const handleFavourite = async () => {
     try {
-      const response = await axios.put('http://localhost:5000/api/v1/addBookFav', {}, { headers: getHeaders() });
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/v1/addBookFav`, {}, { headers: getHeaders() });
       alert(response.data.message);
     } catch (error) {
       alert(error.response?.data?.message || "Error adding to favourites");
@@ -48,7 +48,7 @@ const BookDetails = () => {
 
   const handleCart = async () => {
     try {
-      const response = await axios.put('http://localhost:5000/api/v1/add-to-cart', { quantity }, { headers: getHeaders() });
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/v1/add-to-cart`, { quantity }, { headers: getHeaders() });
       alert(response.data.message);
     } catch (error) {
       alert(error.response?.data?.message || "Error adding to cart");
@@ -59,7 +59,7 @@ const BookDetails = () => {
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this book?")) return;
     try {
-      await axios.delete('http://localhost:5000/api/v1/delete-book', { headers: getHeaders() });
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/v1/delete-book`, { headers: getHeaders() });
       alert("Book deleted successfully");
       navigate("/all-books");
     } catch (error) {

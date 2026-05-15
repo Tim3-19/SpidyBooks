@@ -28,7 +28,7 @@ const AdminBooks = () => {
 
   const fetchBooks = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/get-all-books");
+      const response = await axios.get("https://spidybooks.onrender.com/api/v1/get-all-books");
       setBooks(response.data.data);
       setLoading(false);
     } catch (error) {
@@ -66,7 +66,7 @@ const AdminBooks = () => {
   const handleDelete = async (bookId) => {
     if(window.confirm("Are you sure you want to delete this book?")) {
       try {
-        await axios.delete("http://localhost:5000/api/v1/delete-book", {
+        await axios.delete("https://spidybooks.onrender.com/api/v1/delete-book", {
           headers: { ...headers, bookid: bookId }
         });
         fetchBooks();
@@ -80,7 +80,7 @@ const AdminBooks = () => {
   const updateQuantity = async (bookId, change, currentQty) => {
     if (currentQty + change < 0) return;
     try {
-      await axios.put(`http://localhost:5000/api/v1/update-quantity/${bookId}`, { change }, { headers });
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/v1/update-quantity/${bookId}`, { change }, { headers });
       setBooks(books.map(b => b._id === bookId ? { ...b, quantity: (b.quantity || 0) + change } : b));
     } catch (error) {
       console.error(error);
@@ -96,11 +96,11 @@ const AdminBooks = () => {
     e.preventDefault();
     try {
       if (editMode) {
-        await axios.put("http://localhost:5000/api/v1/update-books", formData, {
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/v1/update-books`, formData, {
           headers: { ...headers, bookid: currentBookId }
         });
       } else {
-        await axios.post("http://localhost:5000/api/v1/add-books", formData, { headers });
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/add-books`, formData, { headers });
       }
       setIsModalOpen(false);
       fetchBooks();

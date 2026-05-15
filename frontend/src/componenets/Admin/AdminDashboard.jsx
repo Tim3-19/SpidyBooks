@@ -19,10 +19,10 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/v1/admin/stats", { headers });
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/admin/stats`, { headers });
         setStatsData(response.data.data);
         
-        const settingsRes = await axios.get("http://localhost:5000/api/v1/settings");
+        const settingsRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/settings`);
         if (settingsRes.data && settingsRes.data.data) {
           setMaintenanceMode(settingsRes.data.data.maintenanceMode);
         }

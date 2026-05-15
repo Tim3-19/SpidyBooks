@@ -14,7 +14,7 @@ const AdminRevenue = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/v1/all-order", { headers });
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/all-order`, { headers });
         // Filter only delivered orders for revenue calculation
         const delivered = response.data.data.filter(order => order.orderstatus === "Delivered");
         setDeliveredOrders(delivered);
