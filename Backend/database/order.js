@@ -12,8 +12,12 @@ const order = new mongoose.Schema(
         },
         book:{
             type: mongoose.Types.ObjectId,
-            // Should reference the "book" model defined in book.js
             ref: "book",
+            required: true,
+        },
+        quantity:{
+            type: Number,
+            default: 1,
             required: true,
         },
         orderstatus:{

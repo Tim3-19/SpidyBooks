@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { CardBody, CardContainer, CardItem } from "../ui/3d-card"; // Make sure path is correct
 import axios from "axios";
+import { motion } from "framer-motion";
+
 const BookCard = ({ data,favourite }) => {
   const headers = {
     id: localStorage.getItem("id"),
@@ -15,16 +17,29 @@ const BookCard = ({ data,favourite }) => {
   if (!data) return null;
 
   return (
-    <div className="w-auto "> {/* Optional wrapper to control width */}
+    <motion.div 
+      whileHover={{ scale: 1.05, y: -5 }}
+      transition={{ type: "spring", stiffness: 300 }}
+      className="w-auto "> {/* Optional wrapper to control width */}
       <Link to={`/view-book-details/${data._id}`}>
         <CardContainer className="inter-var">
-          <CardBody className="bg-linear-to-b from-zinc-800 via-zinc-900 to-black relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/10 w-82 h-auto rounded-xl p-6 border border-zinc-800">
+          <CardBody className="bg-zinc-900/80 backdrop-blur-md relative group/card hover:shadow-2xl hover:shadow-[#fde047]/20 w-82 h-auto rounded-xl p-6 border border-zinc-800 hover:border-[#fde047]/50 transition-all duration-300">
             
             {/* Image Section - High Depth (translateZ="100") */}
             <CardItem
               translateZ="100"
-              className="w-full mt-4"
+              className="w-full mt-4 relative"
             >
+              {data.quantity === 0 && (
+                <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md z-10 shadow-[0_0_10px_rgba(239,68,68,0.5)]">
+                  Out of Stock
+                </div>
+              )}
+              {data.quantity > 0 && data.quantity <= 5 && (
+                <div className="absolute top-2 right-2 bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded-md z-10 shadow-[0_0_10px_rgba(253,224,71,0.5)]">
+                  Stock is running low
+                </div>
+              )}
               <div className="w-full h-60 overflow-hidden rounded-xl bg-zinc-900 flex items-center justify-center">
                  <img
                   src={data.url}
@@ -70,7 +85,7 @@ const BookCard = ({ data,favourite }) => {
                 <CardItem
                   translateZ={20}
                   as="button"
-                  className="px-4 py-2 rounded-xl bg-zinc-100 dark:bg-white dark:text-black text-black text-xs font-bold"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#fde047] to-yellow-500 text-black text-xs font-bold hover:shadow-[0_0_15px_rgba(253,224,71,0.4)] transition-all duration-300"
                 >
                   View Details
                 </CardItem>
@@ -83,13 +98,13 @@ const BookCard = ({ data,favourite }) => {
               <button 
           // Added onClick handler
           onClick={handleRemoveFav}
-          // Fixed 'bg-yello' to 'bg-yellow' and added text color and margin top
-          className="mt-4 px-4 py-2 bg-yellow-100 text-yellow-900 border border-yellow-500 rounded font-semibold hover:bg-yellow-200 transition-all duration-200"
+          // Updated to premium black and yellow aesthetic
+          className="mt-4 w-full px-4 py-2 bg-transparent text-red-500 border border-red-500/50 rounded-lg font-semibold hover:bg-red-500/10 hover:border-red-500 hover:shadow-[0_0_10px_rgba(239,68,68,0.2)] transition-all duration-300"
         >
                 Remove from fav
               </button>
   }
-    </div>
+    </motion.div>
   );
 };
 

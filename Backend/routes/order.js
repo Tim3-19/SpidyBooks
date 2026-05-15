@@ -19,15 +19,40 @@ console.log("Full Body Object:", req.body); // See what keys are actually here
             return res.status(400).json({ message: "No order data provided" });
         }
 
+        // Step 1: Pre-check all book quantities
+        // Count required quantities for each book id
+        const requiredQuantities = {};
         for (const orderItem of order) {
-            console.log("3. Processing Item:", orderItem);
-
-            // AUTO-FIX: Handle both "Whole Book Object" and "Just ID String"
             const bookId = orderItem._id ? orderItem._id : orderItem;
+            requiredQuantities[bookId] = (requiredQuantities[bookId] || 0) + 1;
+        }
+
+        // Fetch all requested books from DB and verify stock
+        const bookDocs = {};
+        for (const [bookId, reqQty] of Object.entries(requiredQuantities)) {
+            const bookDoc = await book.findById(bookId); // Note: schema name is 'book'
+            if (!bookDoc) {
+                return res.status(404).json({ message: "Book not found" });
+            }
+            if ((bookDoc.quantity || 0) < reqQty) {
+                return res.status(400).json({ message: `Sorry, "${bookDoc.title}" is out of stock or does not have enough quantity.` });
+            }
+            bookDocs[bookId] = bookDoc;
+        }
+
+        // Step 2: Decrement stock
+        for (const [bookId, reqQty] of Object.entries(requiredQuantities)) {
+            await book.findByIdAndUpdate(bookId, { $inc: { quantity: -reqQty } });
+        }
+
+        // Step 3: Place orders
+        for (const [bookId, reqQty] of Object.entries(requiredQuantities)) {
+            console.log(`3. Processing Item: ${bookId} with Quantity: ${reqQty}`);
 
             const newOrder = new Order({
                 user: id,
                 book: bookId, 
+                quantity: reqQty,
             });
 
             const orderFromDb = await newOrder.save();
@@ -42,7 +67,7 @@ console.log("Full Body Object:", req.body); // See what keys are actually here
         // Clear cart
         await User.findByIdAndUpdate(id, { $set: { cart: [] } });
 
-        return res.json({ status: "Success", message: "Order Placed" });
+        return res.json({ status: "Success", message: "Order Placed Successfully" });
 
     } catch (error) {
         console.error("❌ ERROR in Place Order:", error); // READ THIS IN CONSOLE
@@ -77,41 +102,40 @@ console.log("Extracted ID:", id);
 
 
 //order list for admin
-router.get("/all-order",authenticateToken,async(req,res) => {
+router.get("/all-order", authenticateToken, async(req, res) => {
     try {
-        const { id } =req.headers;
-        const userData = await User.find().populate({
+        const orderData = await Order.find()
+            .populate("book")
+            .populate("user")
+            .sort({ createdAt: -1 });
             
-                path:"books",
-             }).populate({
-                path:"user",
-             })
-             .sort({craetedAt: -1}) 
-             return res.json({
+        return res.json({
             status: "Success",
-            data: userData,             
+            data: orderData,             
         });
         
     } catch (error) {
+        console.error("Error fetching all orders:", error);
         res.status(500).json({ message: "Internal Server Issue" });
     } 
-})
+});
 
 //updating order status
-router.put("/update-status/:id",authenticateToken,async(req,res) => {
+router.put("/update-status/:id", authenticateToken, async(req, res) => {
     try {
-        const { id } =req.params;
-        await order.findByIdAndUpdate(id,{status:req.body.status});
+        const { id } = req.params;
+        await Order.findByIdAndUpdate(id, { orderstatus: req.body.status });
        
         return res.json({
-        status: "Success",
-        message: "Status updated succefullly",             
+            status: "Success",
+            message: "Status updated successfully",             
         });
         
     } catch (error) {
+        console.error("Error updating status:", error);
         res.status(500).json({ message: "Internal Server Issue" });
     } 
-})
+});
 
 
 module.exports=router;

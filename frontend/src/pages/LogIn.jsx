@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {authActions} from "../store/auth";
 import { useDispatch } from "react-redux";
+import { motion } from "framer-motion";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -39,67 +40,94 @@ const Login = () => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role); // Optional: If you have admin roles
 
-      // 3. Navigate to Home Page
-      navigate("/");
-      
+      // 3. Navigate to Home Page or Admin Dashboard
+      if (response.data.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } catch (error) {
       // Handle Errors (Wrong password, User not found, etc.)
       alert(error.response.data.message);
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  };
+
   return (
-    <div className="h-screen bg-zinc-900 px-12 py-8 flex items-center justify-center">
-      <div className="bg-zinc-800 rounded-lg px-8 py-5 w-full md:w-3/6 lg:w-2/6">
-        <p className="text-zinc-200 text-xl font-semibold">Log In</p>
+    <div className="relative min-h-screen bg-gradient-to-br from-zinc-950 via-yellow-950/30 to-black overflow-hidden flex items-center justify-center px-6 py-8">
+      <motion.div 
+        className="relative z-10 bg-zinc-900/80 backdrop-blur-md border border-zinc-800 rounded-2xl px-8 py-10 w-full md:w-3/6 lg:w-2/6 shadow-2xl"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={itemVariants} className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-yellow-100 mb-2">Welcome Back</h1>
+          <p className="text-zinc-400">Log in to continue your reading journey</p>
+        </motion.div>
         
-        <div className="mt-4">
-          <div>
-            <label htmlFor="" className="text-zinc-400">Username</label>
+        <div className="space-y-5" onKeyDown={(e) => { if (e.key === 'Enter') submit(); }}>
+          <motion.div variants={itemVariants}>
+            <label htmlFor="username" className="text-zinc-400 font-medium">Username</label>
             <input
               type="text"
-              className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 outline-none"
+              id="username"
+              className="w-full mt-2 bg-zinc-950 border border-zinc-800 text-zinc-100 p-3 rounded-lg outline-none transition-all duration-300 focus:border-[#fde047] focus:shadow-[0_0_15px_rgba(253,224,71,0.3)]"
               placeholder="username"
               name="username"
               required
               value={Values.username}
               onChange={change}
             />
-          </div>
+          </motion.div>
 
-          <div className="mt-4">
-            <label htmlFor="" className="text-zinc-400">Password</label>
+          <motion.div variants={itemVariants}>
+            <label htmlFor="password" className="text-zinc-400 font-medium">Password</label>
             <input
               type="password"
-              className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 outline-none"
+              id="password"
+              className="w-full mt-2 bg-zinc-950 border border-zinc-800 text-zinc-100 p-3 rounded-lg outline-none transition-all duration-300 focus:border-[#fde047] focus:shadow-[0_0_15px_rgba(253,224,71,0.3)]"
               placeholder="password"
               name="password"
               required
               value={Values.password}
               onChange={change}
             />
-          </div>
+          </motion.div>
 
-          <div className="mt-4">
+          <motion.div variants={itemVariants} className="pt-2">
             <button
-              className="w-full bg-blue-500 text-white font-semibold py-2 rounded hover:bg-blue-600 transition-all duration-300"
+              className="w-full bg-gradient-to-r from-[#fde047] to-yellow-500 text-black font-bold py-3 rounded-lg shadow-[0_0_15px_rgba(253,224,71,0.4)] hover:shadow-[0_0_25px_rgba(253,224,71,0.8)] hover:scale-[1.02] transition-all duration-300"
               onClick={submit}
             >
               Log In
             </button>
-          </div>
+          </motion.div>
           
-          <p className="mt-4 text-center text-zinc-400 font-semibold">
-            Or
-          </p>
-          <p className="mt-4 text-center text-zinc-400 font-semibold">
-            Don't have an account? &nbsp;
-            <Link to="/SignUp" className="hover:text-blue-500 text-zinc-200">
-              <u>Sign Up</u>
-            </Link>
-          </p>
+          <motion.div variants={itemVariants} className="mt-6 border-t border-zinc-800 pt-6">
+            <p className="text-center text-zinc-400 font-medium">
+              Don't have an account? &nbsp;
+              <Link to="/SignUp" className="text-[#fde047] hover:text-yellow-300 hover:underline transition-colors">
+                Sign Up
+              </Link>
+            </p>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

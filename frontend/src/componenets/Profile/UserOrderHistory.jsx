@@ -60,8 +60,13 @@ const UserOrderHistory = () => {
               className="flex flex-col md:flex-row justify-between gap-4 items-start md:items-center bg-zinc-800/80 rounded-lg p-4 border border-zinc-700/60"
             >
               <div>
-                <h3 className="text-lg font-semibold text-zinc-100">
+                <h3 className="text-lg font-semibold text-zinc-100 flex items-center gap-2">
                   {order.book?.title || "Book removed"}
+                  {order.quantity > 1 && (
+                    <span className="text-xs bg-zinc-700/80 text-zinc-300 px-2 py-0.5 rounded-full border border-zinc-600">
+                      Qty: {order.quantity}
+                    </span>
+                  )}
                 </h3>
                 <p className="text-sm text-zinc-400">
                   by {order.book?.author || "Unknown"}
@@ -80,7 +85,7 @@ const UserOrderHistory = () => {
                 </span>
                 {order.book?.price && (
                   <span className="mt-1 text-base font-semibold text-yellow-100">
-                    ₹ {order.book.price}
+                    ₹ {order.book.price * (order.quantity || 1)}
                   </span>
                 )}
               </div>

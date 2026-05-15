@@ -57,38 +57,63 @@ const cardVariants = {
   initial={{ opacity: 0 }}
   animate={{ opacity: 1 }}
   transition={{ duration: 0.8, ease: "easeOut" }}
-  className="
-    relative min-h-screen px-6 md:px-14 py-10
-    bg-gradient-to-br from-[#07080d] via-[#0b1020] to-[#120b1a]
-    overflow-hidden
-  "
+  className="relative min-h-screen overflow-hidden bg-zinc-950 font-sans"
 >
-    <div className="relative min-h-screen px-6 md:px-14 py-10 bg-gradient-to-br from-[#07080d] via-[#0b1020] to-[#120b1a] overflow-hidden
-  before:absolute before:inset-0 before:bg-[radial-gradient(rgba(255,255,255,0.05)_1px,transparent_1px)] before:bg-[size:4px_4px] before:opacity-30 before:content-['']">
-    <div className="pointer-events-none absolute inset-0 z-0">
-  <div className="absolute -top-1/3 -left-1/4 w-[60%] h-[60%] bg-indigo-500/15 rounded-full blur-[140px]" />
-  <div className="absolute top-[30%] -right-1/4 w-[55%] h-[55%] bg-purple-500/15 rounded-full blur-[140px]" />
-  <div className="absolute bottom-[-20%] left-[20%] w-[40%] h-[40%] bg-yellow-400/10 rounded-full blur-[120px]" />
-</div>
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-        <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-blue-500/10 rounded-full blur-[100px]"></div>
-        <div className="absolute top-[40%] -right-[10%] w-[40%] h-[40%] bg-purple-500/10 rounded-full blur-[100px]"></div>
-    </div>
+  {/* Dynamic Background */}
+  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-yellow-500/10 via-zinc-950 to-zinc-950" />
+  <div className="
+absolute
+top-[35%]
+left-1/2
+-translate-x-1/2
+
+w-[1000px]
+h-[600px]
+
+bg-yellow-400/5
+
+blur-[180px]
+
+pointer-events-none
+"/>
+
+  <div className="relative z-10 min-h-screen px-6 md:px-14 py-10">
       <motion.div
   initial={{ opacity: 0, y: 30 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.7, delay: 0.2 }}
-  className="relative z-10 mb-10"
+  className="relative z-10 mb-10 mt-4 text-center"
 >
-  <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-yellow-100">
-    All Books
-  </h1>
-  <p className="mt-2 text-zinc-400">
-    Hand-picked reads curated for curious minds
+  <h1
+  className="
+text-6xl
+md:text-8xl
+
+font-black
+
+tracking-[-3px]
+leading-[0.95]
+
+text-transparent
+bg-clip-text
+
+bg-gradient-to-b 
+from-[#fef08a] 
+via-[#fde047] 
+to-[#ca8a04]
+
+
+"
+>
+  Discover All Books
+</h1>
+  <p className="mt-6 text-lg text-zinc-400 font-medium max-w-2xl mx-auto">
+    Explore our hand-picked reads, curated for curious minds. Find your next favorite story right here.
   </p>
+  <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#fde047] to-transparent mx-auto mt-6 rounded-full shadow-[0_0_15px_rgba(253,224,71,0.8)]" />
 </motion.div>
         {loading && (
-  <div className="relative z-10 flex items-center justify-center my-20">
+  <div className="relative z-10 flex items-center justify-center my-20 ">
     <div className="backdrop-blur-xl bg-white/5 p-8 rounded-2xl shadow-lg">
       <Loader />
     </div>

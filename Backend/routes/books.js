@@ -24,6 +24,7 @@ const {authenticateToken} = require("./userAuth");
              price: req.body.price,
              desc: req.body.desc,
              lang: req.body.lang,
+             quantity: req.body.quantity || 0
 
 
          })
@@ -47,6 +48,7 @@ const {authenticateToken} = require("./userAuth");
              price: req.body.price,
              desc: req.body.desc,
              lang: req.body.lang,
+             quantity: req.body.quantity
     })
     return res.status(200).json({message:"Book updated succesfully"});
     }catch(error)
@@ -58,13 +60,31 @@ const {authenticateToken} = require("./userAuth");
    try {
      const {bookid} = req.headers;
         await Book.findByIdAndDelete(bookid);
-        return re.status(200).json({message:"Deleted successfully"})
+        return res.status(200).json({message:"Deleted successfully"})
 
     
    } catch (error) {
     
         return res.status(500).json({ message: "Internal Server Issue" });
    }
+ });
+ 
+ router.put("/update-quantity/:id", authenticateToken, async(req, res) => {
+    try {
+        const { id } = req.params;
+        const { change } = req.body; // should be 1 or -1
+        
+        const book = await Book.findById(id);
+        if(!book) return res.status(404).json({ message: "Book not found" });
+
+        const newQuantity = (book.quantity || 0) + change;
+        if(newQuantity < 0) return res.status(400).json({ message: "Quantity cannot be less than 0" });
+
+        await Book.findByIdAndUpdate(id, { quantity: newQuantity });
+        return res.status(200).json({ message: "Quantity updated successfully", quantity: newQuantity });
+    } catch(error) {
+        return res.status(500).json({ message: "Internal Server Issue" });
+    }
  });
  router.get("/get-all-books",async(req,res)=>{
     try

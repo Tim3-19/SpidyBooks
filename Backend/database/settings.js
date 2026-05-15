@@ -1,0 +1,13 @@
+const mongoose = require("mongoose");
+
+const settingsSchema = new mongoose.Schema(
+    {
+        maintenanceMode: {
+            type: Boolean,
+            default: false,
+        },
+    },
+    { timestamps: true }
+);
+
+module.exports = mongoose.model("settings", settingsSchema);

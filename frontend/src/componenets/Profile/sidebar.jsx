@@ -6,103 +6,309 @@ import {
   FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
+// Inside your component:
 const Sidebar = ({ data }) => {
+
+  const navigate = useNavigate();
+
+const handleLogout = () => {
+  // 1. Clear all session data
+  localStorage.clear(); 
+  
+  // 2. If you use Redux, dispatch a logout action here:
+  // dispatch(authActions.logout());
+
+  // 3. Redirect to login or home
+  navigate("/login");
+  
+  // 4. Force a reload (Optional but recommended to clear any remaining memory state)
+  window.location.reload();
+};
+
   const location = useLocation();
 
   const isActive = (path) =>
     location.pathname === path;
 
-  const navItem = (to, label, Icon, activeColor) => (
+  const navItem = (
+    to,
+    label,
+    Icon,
+    activeColor
+  ) => (
+
     <Link
       to={to}
       className={`
-        flex items-center gap-4 px-4 py-3 rounded-xl
+        group
+        relative
+        overflow-hidden
+        flex items-center gap-4
+        px-5 py-4
+        rounded-2xl
         text-sm font-medium
         transition-all duration-300
+        border
+
         ${
           isActive(to)
-            ? "bg-zinc-900 text-white shadow-inner"
-            : "text-zinc-400 hover:text-white hover:bg-zinc-900/60"
+            ? `
+              bg-zinc-900/90
+              border-zinc-700
+              text-white
+              shadow-[0_0_25px_rgba(255,255,255,0.04)]
+            `
+            : `
+              border-transparent
+              text-zinc-400
+              hover:text-white
+              hover:bg-zinc-900/60
+              hover:border-zinc-800
+            `
         }
       `}
     >
-      <Icon
-        className={`text-base ${
-          isActive(to)
-            ? activeColor
-            : "text-zinc-500 group-hover:text-white"
-        }`}
-      />
-      {label}
+
+      {/* Active Glow */}
+      {isActive(to) && (
+        <div className="
+          absolute
+          inset-0
+          bg-gradient-to-r
+          from-indigo-500/10
+          to-transparent
+          pointer-events-none
+        " />
+      )}
+
+      {/* Icon */}
+      <div className="
+        relative z-10
+        transition-transform duration-300
+        group-hover:scale-110
+      ">
+        <Icon
+          className={`
+            text-base
+            ${
+              isActive(to)
+                ? activeColor
+                : "text-zinc-500 group-hover:text-white"
+            }
+          `}
+        />
+      </div>
+
+      {/* Label */}
+      <span className="relative z-10">
+        {label}
+      </span>
+
+      {/* Active Side Bar */}
+      {isActive(to) && (
+        <div className="
+          absolute
+          left-0
+          top-3
+          bottom-3
+          w-1
+          rounded-full
+          bg-indigo-400
+        " />
+      )}
+
     </Link>
   );
 
   return (
+
     <div className="
-      bg-zinc-900/70 backdrop-blur-xl
-      border border-zinc-800
-      rounded-2xl
-      p-6
+      relative
+      overflow-hidden
+
+      bg-zinc-900/60
+      backdrop-blur-2xl
+
+      border border-zinc-800/80
+
+      rounded-3xl
+      p-7
+
       h-full
       flex flex-col
-      shadow-[0_30px_80px_rgba(0,0,0,0.6)]
-    ">
-      {/* -------- Profile -------- */}
-      <div className="flex flex-col items-center text-center">
-        <div className="relative">
-          {/* Glow */}
-          <div className="absolute inset-0 rounded-full bg-indigo-500/20 blur-xl"></div>
 
-          <img
-            src={data.avatar}
-            alt="avatar"
-            className="
-              relative
-              h-24 w-24
-              rounded-full
-              object-cover
-              ring-2 ring-zinc-700
-              shadow-xl
-            "
-          />
+      shadow-[0_30px_100px_rgba(0,0,0,0.7)]
+    ">
+
+      {/* Background Glow */}
+      <div className="
+        absolute
+        -top-20
+        -right-20
+        h-40
+        w-40
+        rounded-full
+        bg-indigo-500/10
+        blur-3xl
+      " />
+
+      {/* -------- Profile -------- */}
+      <div className="
+        relative
+        flex flex-col
+        items-center
+        text-center
+      ">
+
+        {/* Avatar Wrapper */}
+        <div className="relative group">
+
+          {/* Outer Glow */}
+          <div className="
+            absolute
+            inset-0
+            rounded-full
+            bg-indigo-500/20
+            blur-2xl
+            scale-110
+            group-hover:scale-125
+            transition-all duration-500
+          " />
+
+          {/* Avatar Ring */}
+          <div className="
+            relative
+            p-[3px]
+            rounded-full
+            bg-gradient-to-br
+            from-indigo-400/70
+            via-zinc-700
+            to-zinc-900
+          ">
+
+            <img
+              src={data.avatar}
+              alt="avatar"
+              className="
+                h-24 w-24
+                rounded-full
+                object-cover
+                bg-zinc-950
+              "
+            />
+
+          </div>
         </div>
 
-        <p className="mt-4 text-lg font-semibold text-zinc-100">
+        {/* Username */}
+        <p className="
+          mt-5
+          text-xl
+          font-semibold
+          text-zinc-100
+          tracking-wide
+        ">
           {data.username}
         </p>
 
-        <p className="text-xs text-zinc-400 mt-1 truncate w-full">
+        {/* Email */}
+        <p className="
+          text-xs
+          text-zinc-500
+          mt-1
+          truncate
+          max-w-[220px]
+        ">
           {data.email}
         </p>
 
-        <div className="w-full h-px bg-zinc-800 my-6"></div>
+        {/* Divider */}
+        <div className="
+          w-full
+          h-px
+          bg-gradient-to-r
+          from-transparent
+          via-zinc-700
+          to-transparent
+          my-7
+        " />
       </div>
 
       {/* -------- Navigation -------- */}
-      <div className="flex flex-col gap-2">
-        {navItem("/profile", "Favourites", FaHeart, "text-red-500")}
-        {navItem("/profile/orderHistory", "Order History", FaHistory, "text-blue-400")}
-        {navItem("/profile/settings", "Settings", FaCog, "text-emerald-400")}
+      <div className="flex flex-col gap-3">
+
+        {navItem(
+          "/profile",
+          "Favourites",
+          FaHeart,
+          "text-red-500"
+        )}
+
+        {navItem(
+          "/profile/orderHistory",
+          "Order History",
+          FaHistory,
+          "text-blue-400"
+        )}
+
+        {navItem(
+          "/profile/settings",
+          "Settings",
+          FaCog,
+          "text-emerald-400"
+        )}
+
       </div>
 
+      {/* Spacer */}
+      <div className="flex-1" />
+
       {/* -------- Logout -------- */}
-      <button
+        <button
+        onClick={handleLogout}
         className="
-          mt-auto
+          group
+          mt-8
+
           flex items-center justify-center gap-3
-          py-3 rounded-xl
+
+          py-4 rounded-2xl
+
           text-sm font-semibold
+
           text-zinc-300
+
           bg-zinc-800/60
-          hover:bg-red-500/10 hover:text-red-500
-          border border-zinc-800 hover:border-red-500/40
+
+          border border-zinc-800
+
+          hover:bg-red-500/10
+          hover:text-red-400
+          hover:border-red-500/40
+
           transition-all duration-300
         "
       >
-        Log Out
-        <FaSignOutAlt className="text-sm" />
+
+        <span className="
+          transition-transform duration-300
+          group-hover:-translate-x-1
+        ">
+          Log Out
+        </span>
+
+        <FaSignOutAlt
+          className="
+            text-sm
+            transition-transform duration-300
+            group-hover:translate-x-1
+          "
+        />
+
       </button>
+
     </div>
   );
 };
