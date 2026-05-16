@@ -292,12 +292,11 @@ const handleLogout = () => {
         "
       >
 
-        <span className="
-          transition-transform duration-300
-          group-hover:-translate-x-1
-        ">
-          Log Out
-        </span>
+       <Link to="/" className="group flex items-center">
+  <span className="transition-transform duration-300 group-hover:-translate-x-1">
+    Log Out
+  </span>
+</Link>
 
         <FaSignOutAlt
           className="

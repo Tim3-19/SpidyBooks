@@ -2,7 +2,7 @@ import React from 'react'
 
 const Footer = () => {
   return (
-    <footer className="mt-10 bg-gradient-to-r from-zinc-900 via-zinc-950 to-zinc-900 text-zinc-300 border-t border-zinc-800/80">
+    <footer className=" bg-gradient-to-r from-zinc-900 via-zinc-950 to-zinc-900 text-zinc-300 border-t border-zinc-800/80">
       <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <img

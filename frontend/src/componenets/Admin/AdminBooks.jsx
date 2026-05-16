@@ -89,8 +89,13 @@ const AdminBooks = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const { name, value } = e.target; // Destructure for cleaner code
+  
+  setFormData((prevData) => ({
+    ...prevData,
+    [name]: value,
+  }));
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -111,7 +116,7 @@ const AdminBooks = () => {
   };
 
   const filteredBooks = books.filter(b => b.title.toLowerCase().includes(searchTerm.toLowerCase()));
-
+console.log("Current Form State:", formData);
   return (
     <div className="text-zinc-100 relative">
       <div className="flex justify-between items-center mb-8 border-b border-zinc-800 pb-4">
