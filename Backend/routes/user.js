@@ -74,16 +74,12 @@ router.post("/sign-in", async (req, res) => {
         }
 
         // 3. Create Token Payload
-        // Suggestion: Don't put claims in an array. Put them directly in the object.
-        // It makes accessing them in middleware easier (req.user.role vs req.user.authClaims[0].role)
         const authClaims = {
             name: existingUser.name,
             role: existingUser.role
         };
 
         // 4. Generate Token
-        // CRITICAL: Ensure "SecretKey" matches your middleware EXACTLY.
-        // Ideally, use process.env.SECRET_KEY in both places.
         const token = jwt.sign(authClaims, "SecretKey", { expiresIn: "30d" });
 
         return res.status(200).json({ 

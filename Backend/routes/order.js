@@ -74,6 +74,7 @@ router.post("/place-order", authenticateToken, async (req, res) => {
         return res.status(500).json({ message: "Error placing order", error: error.message });
     }
 });
+//retreiving order history 
 router.get("/order-history", authenticateToken, async (req, res) => {
 
     try {
@@ -98,7 +99,7 @@ router.get("/order-history", authenticateToken, async (req, res) => {
 
 
 })
-//order history for user
+
 
 
 //order list for admin

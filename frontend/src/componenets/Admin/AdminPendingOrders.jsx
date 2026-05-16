@@ -16,7 +16,7 @@ const AdminPendingOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/all-order`, { headers });
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/all-orders`, { headers });
         // Filter orders that are NOT delivered and NOT cancelled
         const pending = response.data.data.filter(order => order.orderstatus === "Order Placed" || order.orderstatus === "Out for delivery");
         setPendingOrders(pending);

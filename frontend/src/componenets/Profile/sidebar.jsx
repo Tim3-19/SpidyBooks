@@ -7,24 +7,28 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { authActions } from '../../store/auth';
 
 // Inside your component:
 const Sidebar = ({ data }) => {
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
 const handleLogout = () => {
   // 1. Clear all session data
-  localStorage.clear(); 
+  // Clear authentication data
+  localStorage.removeItem("token");
+  localStorage.removeItem("id");
+  // Dispatch logout action
+  dispatch(authActions.logout());
   
-  // 2. If you use Redux, dispatch a logout action here:
+  // 2. If you use Redux, dispatch your logout action here:
   // dispatch(authActions.logout());
 
-  // 3. Redirect to login or home
-  navigate("/login");
-  
-  // 4. Force a reload (Optional but recommended to clear any remaining memory state)
-  window.location.reload();
+  // 3. Redirect to login page and replace history entry
+  navigate("/logIn", { replace: true });
 };
 
   const location = useLocation();
@@ -291,13 +295,9 @@ const handleLogout = () => {
           transition-all duration-300
         "
       >
-
-       <Link to="/" className="group flex items-center">
-  <span className="transition-transform duration-300 group-hover:-translate-x-1">
-    Log Out
-  </span>
-</Link>
-
+        <span className="transition-transform duration-300 group-hover:-translate-x-1">
+          Log Out
+        </span>
         <FaSignOutAlt
           className="
             text-sm
@@ -305,7 +305,6 @@ const handleLogout = () => {
             group-hover:translate-x-1
           "
         />
-
       </button>
 
     </div>

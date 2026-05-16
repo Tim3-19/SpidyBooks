@@ -2,6 +2,7 @@ const router = require("express").Router();
 const User = require("../database/user");
 const {authenticateToken} = require("./userAuth");
 
+//Adding Books to favourites
 router.put("/addBookFav",authenticateToken,async(req,res)=>{
     try {
         

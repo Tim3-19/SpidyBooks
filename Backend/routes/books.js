@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const User = require("../database/user");
-//npm i bcrypt
 
 //npm i jsonwebtoken
 const jwt = require("jsonwebtoken");
@@ -8,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const {authenticateToken} = require("./userAuth");
  const Book = require("../database/book");
 
+ //Adding Books
  router.post("/add-books",authenticateToken, async(req,res)=>{
      try {
 
@@ -37,6 +37,7 @@ const {authenticateToken} = require("./userAuth");
         
      }
  });
+ //Updating Books
  router.put("/update-books",authenticateToken,async(req,res)=>{
 
     try{
@@ -56,6 +57,7 @@ const {authenticateToken} = require("./userAuth");
         return res.status(500).json({ message: "Internal Server Issue" });
     }
  });
+ //Deleting Route
  router.delete("/delete-book",authenticateToken,async(req,res)=>{
    try {
      const {bookid} = req.headers;
@@ -68,7 +70,7 @@ const {authenticateToken} = require("./userAuth");
         return res.status(500).json({ message: "Internal Server Issue" });
    }
  });
- 
+ //Updating Quantity
  router.put("/update-quantity/:id", authenticateToken, async(req, res) => {
     try {
         const { id } = req.params;
@@ -86,6 +88,7 @@ const {authenticateToken} = require("./userAuth");
         return res.status(500).json({ message: "Internal Server Issue" });
     }
  });
+ //retreive All books
  router.get("/get-all-books",async(req,res)=>{
     try
     { const Books = await Book.find().sort({createdAt: -1});
@@ -100,6 +103,7 @@ const {authenticateToken} = require("./userAuth");
         return res.status(500).json({ message: "Error occured "});
     }
  });
+ //retreive recently added books
  router.get("/recent-added",async (req,res) => {
      try
     { const Books = await Book.find().sort({createdAt: -1}).limit(5);
@@ -114,6 +118,8 @@ const {authenticateToken} = require("./userAuth");
         return res.status(500).json({ message: "Error occured "});
     }
  })
+
+ //retreive book by id
  router.get("/book-id/:id",async(req,res)=>{
     try{
         const{id} = req.params;

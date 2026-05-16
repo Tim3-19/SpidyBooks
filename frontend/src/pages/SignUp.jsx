@@ -1,9 +1,24 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { motion } from "framer-motion";
+import { motion,AnimatePresence } from "framer-motion";
+import { AlertCircle } from 'lucide-react';
 
 const SignUp = () => {
+  const [modalConfig, setModalConfig] = useState({
+  isOpen: false,
+  title: "",
+  message: ""
+});
+
+// A quick helper function to open errors cleanly
+const triggerError = (title, message) => {
+  setModalConfig({
+    isOpen: true,
+    title: title,
+    message: message
+  });
+};
   const navigate = useNavigate();
   
   // State to hold user input
@@ -12,7 +27,8 @@ const SignUp = () => {
     email: "",
     password: "",
     address: "",
-    role: "user"
+    role: "user",
+    confirmPassword: "",
   });
 
   // Handle Input Changes
@@ -31,18 +47,22 @@ const SignUp = () => {
         Values.address === "" ||
         Values.role === ""
       ) {
-        alert("All fields are required!");
+        triggerError("Required Fields Missing", "Please fill in all fields before submitting your registration.");
         return;
+      }
+      if (Values.password !== Values.confirmPassword) {
+          triggerError("Password Mismatch", "The confirmation password doesn't match your original password.");
+          return; // Stop the form submission
       }
 
       // Send data to backend (Adjust URL if needed)
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/sign-up`, Values);
       
-      alert(response.data.message);
+      triggerError("Registration Successful",   response.data.message);
       navigate("/LogIn"); // Redirect to login on success
       
     } catch (error) {
-      alert(error.response?.data?.message || "An error occurred");
+      triggerError("Registration Failed", error.response?.data?.message || "An error occurred");
     }
   };
 
@@ -116,6 +136,19 @@ const SignUp = () => {
               onChange={change}
             />
           </motion.div>
+          <motion.div variants={itemVariants}>
+  <label htmlFor="confirmPassword" className="text-zinc-400 font-medium">Confirm Password</label>
+  <input
+    type="password"
+    id="confirmPassword"
+    className="w-full mt-2 bg-zinc-950 border border-zinc-800 text-zinc-100 p-3 rounded-lg outline-none transition-all duration-300 focus:border-[#fde047] focus:shadow-[0_0_15px_rgba(253,224,71,0.3)]"
+    placeholder="confirm your password"
+    name="confirmPassword" // <-- Crucial: Must match your state object key
+    required
+    value={Values.confirmPassword || ""} // <-- Fallback to empty string if initially undefined
+    onChange={change}
+  />
+</motion.div>
 
           <motion.div variants={itemVariants}>
             <label htmlFor="address" className="text-zinc-400 font-medium">Address</label>
@@ -162,8 +195,59 @@ const SignUp = () => {
               </Link>
             </p>
           </motion.div>
+          
         </div>
       </motion.div>
+      {/* Add this at the bottom of your JSX return statement */}
+<AnimatePresence>
+  {modalConfig.isOpen && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      
+      {/* Backdrop */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={() => setModalConfig(prev => ({ ...prev, isOpen: false }))}
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+      />
+
+      {/* The Dialog Box */}
+      <motion.div 
+        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.95, opacity: 0, y: 20 }}
+        transition={{ type: "spring", duration: 0.4 }}
+        className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 p-6 text-center shadow-2xl"
+      >
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-yellow-400 to-transparent" />
+
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-yellow-500/10 text-yellow-400">
+          <AlertCircle size={28} />
+        </div>
+
+        {/* Dynamic Title */}
+        <h3 className="text-lg font-semibold text-zinc-100">
+          {modalConfig.title}
+        </h3>
+        
+        {/* Dynamic Message */}
+        <p className="mt-2 text-sm text-zinc-400">
+          {modalConfig.message}
+        </p>
+
+        <button
+          type="button"
+          onClick={() => setModalConfig(prev => ({ ...prev, isOpen: false }))}
+          className="mt-6 w-full rounded-xl bg-yellow-400 px-4 py-3 font-medium text-zinc-950 transition-all duration-200 hover:bg-yellow-300"
+        >
+          Got it
+        </button>
+      </motion.div>
+
+    </div>
+  )}
+</AnimatePresence>
     </div>
   );
 };

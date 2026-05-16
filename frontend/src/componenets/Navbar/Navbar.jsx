@@ -31,7 +31,7 @@ const Navbar = () => {
   if (isLoggedIn) {
     visibleLinks = role === "admin" ? adminLinks : userLinks;
   } else {
-    visibleLinks = userLinks.filter((l) => !["Cart", "Profile"].includes(l.title));
+    visibleLinks = userLinks.filter((l) => !["All Books","Cart", "Profile"].includes(l.title));
   }
 
   return (

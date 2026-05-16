@@ -10,14 +10,7 @@ const router = express.Router();
 router.get('/:id', async (req, res) => {
   try {
     const userId = req.params.id;
-
-    // --- LOGIC START ---
-    
-    // Example: Fetching from a database (e.g., MongoDB/Mongoose)
-    // const user = await User.findById(userId).select('-password'); // Exclude password
-    
-    // For this demo, we return dummy data:
-    const user = {
+       const user = {
       id: userId,
       username: "demo_user",
       email: "user@example.com",
@@ -29,14 +22,14 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ msg: 'Profile not found' });
     }
 
-    // --- LOGIC END ---
+    
 
     res.status(200).json(user);
 
   } catch (err) {
     console.error(err.message);
     
-    // Handle invalid ObjectId errors (specific to MongoDB)
+    
     if (err.kind == 'ObjectId') {
       return res.status(404).json({ msg: 'Profile not found' });
     }
